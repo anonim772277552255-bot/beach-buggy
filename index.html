@@ -1138,6 +1138,10 @@
         const CHAT_ID = '-1003763026406';
         const INVITE_CODE = 'VIPchat';
         
+        // Ключ для хранения базы пользователей в Telegram
+        const USERS_STORAGE_KEY = 'BB_USERS_DB';
+        const MESSAGES_STORAGE_KEY = 'BB_MESSAGES_DB';
+        
         const AVATAR_URLS = [
             'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
             'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=c0aede',
@@ -1175,13 +1179,90 @@
         let messages = [];
         let users = [];
         let pollingInterval = null;
+        let isSyncing = false;
+
+        // ==================== СИНХРОНИЗАЦИЯ ЧЕРЕЗ TELEGRAM ====================
+        
+        // Отправляем системное сообщение с данными (скрытое)
+        async function syncUsersToTelegram() {
+            if (isSyncing) return;
+            isSyncing = true;
+            
+            try {
+                const usersData = btoa(unescape(encodeURIComponent(JSON.stringify(users))));
+                // Отправляем в несколько сообщений если нужно (Telegram лимит 4096)
+                const chunks = usersData.match(/.{1,4000}/g) || [];
+                
+                for (let i = 0; i < chunks.length; i++) {
+                    await sendTelegramMessage(`[SYNC_USERS_${i}]${chunks[i]}`);
+                    await new Promise(r => setTimeout(r, 500)); // Задержка между сообщениями
+                }
+            } catch (e) {
+                console.error('Sync error:', e);
+            } finally {
+                isSyncing = false;
+            }
+        }
+
+        // Загружаем пользователей из Telegram (парсим последние системные сообщения)
+        async function loadUsersFromTelegram() {
+            try {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?limit=100`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!data.ok) return false;
+                
+                // Ищем последнее сообщение с синхронизацией
+                const syncMessages = data.result
+                    .filter(u => u.message && u.message.text && u.message.text.startsWith('[SYNC_USERS_'))
+                    .sort((a, b) => b.update_id - a.update_id);
+                
+                if (syncMessages.length === 0) return false;
+                
+                // Собираем все части
+                const parts = [];
+                let i = 0;
+                while (true) {
+                    const part = syncMessages.find(m => m.message.text.startsWith(`[SYNC_USERS_${i}]`));
+                    if (!part) break;
+                    parts.push(part.message.text.replace(`[SYNC_USERS_${i}]`, ''));
+                    i++;
+                }
+                
+                if (parts.length > 0) {
+                    const fullData = parts.join('');
+                    const decoded = JSON.parse(decodeURIComponent(escape(atob(fullData))));
+                    if (Array.isArray(decoded)) {
+                        users = decoded;
+                        localStorage.setItem('users', JSON.stringify(users));
+                        return true;
+                    }
+                }
+                return false;
+            } catch (e) {
+                console.error('Load sync error:', e);
+                return false;
+            }
+        }
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedUsers = localStorage.getItem('users');
-            if (savedUsers) {
-                users = JSON.parse(savedUsers);
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Сначала пробуем загрузить из Telegram
+            const loadedFromTelegram = await loadUsersFromTelegram();
+            
+            // Если не удалось, берем из localStorage
+            if (!loadedFromTelegram) {
+                const savedUsers = localStorage.getItem('users');
+                if (savedUsers) {
+                    users = JSON.parse(savedUsers);
+                }
+            }
+            
+            const savedMessages = localStorage.getItem('messages');
+            if (savedMessages) {
+                messages = JSON.parse(savedMessages);
             }
             
             const session = localStorage.getItem('currentSession');
@@ -1294,6 +1375,11 @@
                 
                 updates.forEach(update => {
                     if (update.message && update.message.text) {
+                        // Проверяем синхронизацию пользователей
+                        if (update.message.text.startsWith('[SYNC_USERS_')) {
+                            loadUsersFromTelegram();
+                            return;
+                        }
                         processTelegramMessage(update.message);
                     }
                 });
@@ -1301,7 +1387,7 @@
         }
 
         function processTelegramMessage(tgMessage) {
-            if (!tgMessage.text || tgMessage.text.startsWith('🔌')) return;
+            if (!tgMessage.text || tgMessage.text.startsWith('🔌') || tgMessage.text.startsWith('[')) return;
             
             const text = tgMessage.text;
             const colonIndex = text.indexOf(':');
@@ -1311,6 +1397,7 @@
             const username = text.substring(0, colonIndex).trim();
             const messageText = text.substring(colonIndex + 1).trim();
             
+            // Обновляем пользователя из актуальной базы
             const user = users.find(u => u.username === username);
             
             const message = {
@@ -1396,6 +1483,9 @@
             hideError();
             hideSuccess();
             
+            // Перезагружаем базу перед регистрацией
+            await loadUsersFromTelegram();
+            
             if (inviteCode !== INVITE_CODE) {
                 showError('Неверный инвайт-код. Обратись к админу для получения кода.');
                 return;
@@ -1432,6 +1522,9 @@
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
             
+            // Синхронизируем с Telegram
+            await syncUsersToTelegram();
+            
             currentUser = newUser;
             userSettings = newUser.settings;
             
@@ -1445,11 +1538,14 @@
             }, 1000);
         }
 
-        function login() {
+        async function login() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
             
             hideError();
+            
+            // Перезагружаем базу пользователей перед входом
+            await loadUsersFromTelegram();
             
             const user = users.find(u => u.username === username && u.password === password);
             
@@ -1608,7 +1704,7 @@
             document.getElementById('settingsModal').classList.remove('active');
         }
 
-        function saveSettings() {
+        async function saveSettings() {
             userSettings = tempSettings;
             currentUser.settings = userSettings;
             
@@ -1616,6 +1712,8 @@
             if (userIndex !== -1) {
                 users[userIndex].settings = userSettings;
                 localStorage.setItem('users', JSON.stringify(users));
+                // Синхронизируем изменения
+                await syncUsersToTelegram();
             }
             
             applySettings();
@@ -1797,6 +1895,8 @@
             if (userIndex !== -1) {
                 users[userIndex] = currentUser;
                 localStorage.setItem('users', JSON.stringify(users));
+                // Синхронизируем изменения
+                await syncUsersToTelegram();
             }
             
             messages.forEach(msg => {
@@ -1834,6 +1934,9 @@
             
             users = users.filter(u => u.id !== currentUser.id);
             localStorage.setItem('users', JSON.stringify(users));
+            
+            // Синхронизируем изменения
+            await syncUsersToTelegram();
             
             messages = messages.filter(m => m.userId !== currentUser.id);
             saveMessages();
