@@ -69,6 +69,26 @@
             text-align: center;
         }
 
+        .invite-notice {
+            background: rgba(0, 168, 132, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .invite-notice h3 {
+            color: var(--accent);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .invite-notice p {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
         .form-group { margin-bottom: 16px; }
         
         .form-label {
@@ -92,35 +112,6 @@
         .form-input:focus {
             outline: none;
             border-color: var(--accent);
-        }
-
-        .telegram-setup {
-            background: var(--bg-hover);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-
-        .telegram-setup h3 {
-            color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .telegram-setup p {
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .telegram-setup code {
-            background: var(--bg-dark);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: var(--accent);
         }
 
         .auth-btn {
@@ -689,6 +680,20 @@
             margin: 0 auto 16px;
             border: 3px solid var(--accent);
             overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-avatar-large:hover::after {
+            content: 'Изменить';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
         }
 
         .profile-avatar-large img {
@@ -700,6 +705,12 @@
         .profile-name {
             font-size: 24px;
             font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-username {
+            color: var(--text-secondary);
+            font-size: 14px;
             margin-bottom: 4px;
         }
 
@@ -733,6 +744,78 @@
             color: var(--text-primary);
         }
 
+        .edit-profile-modal .modal-content {
+            width: 400px;
+        }
+
+        .edit-avatar-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .edit-avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            border: 3px solid var(--accent);
+            overflow: hidden;
+        }
+
+        .edit-avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-btn {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            margin: 0 4px;
+        }
+
+        .avatar-edit-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .danger-zone {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--danger);
+        }
+
+        .danger-title {
+            color: var(--danger);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .danger-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .danger-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
         @media (max-width: 600px) {
             .auth-box {
                 margin: 20px;
@@ -740,51 +823,21 @@
             }
             .message-content { max-width: 85%; }
             .settings-modal .modal-content { width: 95%; }
+            .edit-profile-modal .modal-content { width: 95%; }
         }
     </style>
 </head>
 <body>
-    <!-- Экран настройки Telegram -->
-    <div class="auth-screen" id="setupScreen">
-        <div class="auth-box">
-            <h1 class="login-logo">БИЧ БАГГИ</h1>
-            <p class="login-subtitle">Настройка Telegram бэкенда</p>
-            
-            <div class="telegram-setup">
-                <h3>🔧 Как настроить:</h3>
-                <p>1. Напиши <code>@BotFather</code> в Telegram</p>
-                <p>2. Создай бота командой <code>/newbot</code></p>
-                <p>3. Скопируй токен и вставь ниже</p>
-                <p>4. Добавь бота в группу, сделай админом</p>
-                <p>5. Узнай <code>chat_id</code> через API</p>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Bot Token</label>
-                <input type="text" class="form-input" id="botToken" placeholder="123456789:ABCdef...">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Chat ID (группа с ботом)</label>
-                <input type="text" class="form-input" id="chatId" placeholder="-1234567890">
-            </div>
-
-            <button class="auth-btn" onclick="saveTelegramConfig()" id="connectBtn">Подключиться</button>
-            
-            <div class="error-msg" id="setupError"></div>
-            <div class="success-msg" id="setupSuccess"></div>
-            
-            <p style="color: var(--text-secondary); margin-top: 15px; font-size: 12px; text-align: center;">
-                Данные хранятся только в твоём браузере
-            </p>
-        </div>
-    </div>
-
     <!-- Экран авторизации -->
-    <div class="auth-screen" id="authScreen" style="display: none;">
+    <div class="auth-screen" id="authScreen">
         <div class="auth-box">
             <h1 class="login-logo">БИЧ БАГГИ</h1>
             <p class="login-subtitle">Приватный чат для своих</p>
+
+            <div class="invite-notice">
+                <h3>🔒 Закрытое сообщество</h3>
+                <p>Для регистрации нужен инвайт-код от админа</p>
+            </div>
 
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('login')">Вход</button>
@@ -805,6 +858,10 @@
 
             <div id="registerForm" style="display: none;">
                 <div class="form-group">
+                    <label class="form-label">Инвайт-код</label>
+                    <input type="text" class="form-input" id="inviteCode" placeholder="Введи код приглашения">
+                </div>
+                <div class="form-group">
                     <label class="form-label">Имя пользователя</label>
                     <input type="text" class="form-input" id="regUsername" placeholder="Придумай имя" maxlength="15">
                 </div>
@@ -821,12 +878,7 @@
             </div>
 
             <div class="error-msg" id="errorMsg"></div>
-            
-            <div style="margin-top: 20px; text-align: center;">
-                <button onclick="resetConfig()" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px;">
-                    Сменить Telegram настройки
-                </button>
-            </div>
+            <div class="success-msg" id="successMsg"></div>
         </div>
     </div>
 
@@ -910,23 +962,85 @@
     <!-- Модалка профиля -->
     <div class="modal profile-modal" id="profileModal">
         <div class="modal-content">
-            <div class="profile-avatar-large" id="profileAvatar">
+            <div class="profile-avatar-large" id="profileAvatar" onclick="showEditProfile()">
                 <img src="" id="profileAvatarImg" style="display: none;">
                 <span id="profileAvatarFallback">👤</span>
             </div>
             <div class="profile-name" id="profileName">Имя</div>
+            <div class="profile-username" id="profileUsername">@username</div>
             <div class="profile-status" id="profileStatus">в сети</div>
             <div class="profile-actions">
                 <button class="profile-btn secondary" onclick="closeProfile()">Закрыть</button>
-                <button class="profile-btn primary" onclick="logout()">Выйти</button>
+                <button class="profile-btn primary" onclick="showEditProfile()">Редактировать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка редактирования профиля -->
+    <div class="modal edit-profile-modal" id="editProfileModal">
+        <div class="modal-content">
+            <h3 class="settings-title">Редактировать профиль</h3>
+            
+            <div class="edit-avatar-section">
+                <div class="edit-avatar-preview" id="editAvatarPreview">
+                    <img src="" id="editAvatarImg" style="display: none;">
+                    <span id="editAvatarFallback">👤</span>
+                </div>
+                <div>
+                    <button class="avatar-edit-btn" onclick="selectNewAvatar()">Выбрать аватар</button>
+                    <button class="avatar-edit-btn" onclick="uploadNewAvatar()">Загрузить фото</button>
+                </div>
+                <input type="file" id="editAvatarUpload" accept="image/*" style="display: none;" onchange="handleEditAvatar(event)">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Имя пользователя</label>
+                <input type="text" class="form-input" id="editUsername" maxlength="15">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Новый пароль (оставь пустым, если не меняешь)</label>
+                <input type="password" class="form-input" id="editPassword" placeholder="Новый пароль" minlength="4">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Текущий пароль (для подтверждения)</label>
+                <input type="password" class="form-input" id="editConfirmPassword" placeholder="Текущий пароль">
+            </div>
+
+            <div class="error-msg" id="editErrorMsg"></div>
+
+            <div class="settings-actions">
+                <button class="settings-btn secondary" onclick="closeEditProfile()">Отмена</button>
+                <button class="settings-btn primary" onclick="saveProfile()">Сохранить</button>
+            </div>
+
+            <div class="danger-zone">
+                <div class="danger-title">⚠️ Опасная зона</div>
+                <button class="danger-btn" onclick="deleteAccount()">Удалить аккаунт</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка выбора аватара -->
+    <div class="modal" id="avatarSelectModal">
+        <div class="modal-content" style="width: 400px;">
+            <h3 class="settings-title">Выбери новый аватар</h3>
+            <div class="avatar-selector" id="editAvatarSelector" style="max-height: 300px;"></div>
+            <div class="settings-actions" style="margin-top: 20px;">
+                <button class="settings-btn secondary" onclick="closeAvatarSelect()">Отмена</button>
+                <button class="settings-btn primary" onclick="confirmAvatarSelect()">Выбрать</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== КОНФИГУРАЦИЯ ====================
+        // ==================== КОНФИГУРАЦИЯ (ВШИТЫ В КОД) ====================
         
-        // URL аватарок (DiceBear API)
+        const BOT_TOKEN = '8729183119:AAGIj3qYGz_7WnydiNfqOJfbwzXPggIUwqs';
+        const CHAT_ID = '-1003763026406';
+        const INVITE_CODE = 'VIPchat';
+        
         const AVATAR_URLS = [
             'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
             'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=c0aede',
@@ -954,29 +1068,39 @@
 
         // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
         
-        let telegramConfig = {
-            botToken: '',
-            chatId: ''
-        };
-        
         let currentUser = null;
         let userSettings = {};
         let selectedAvatar = AVATAR_URLS[0];
         let customAvatarData = null;
+        let tempEditAvatar = null;
+        let tempEditIsCustom = false;
         let lastUpdateId = 0;
         let messages = [];
         let users = [];
+        let pollingInterval = null;
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Проверяем сохранённые настройки Telegram
-            const savedConfig = localStorage.getItem('telegramConfig');
-            if (savedConfig) {
-                telegramConfig = JSON.parse(savedConfig);
-                showAuthScreen();
+            const savedUsers = localStorage.getItem('users');
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            }
+            
+            const session = localStorage.getItem('currentSession');
+            if (session) {
+                const sessionData = JSON.parse(session);
+                const user = users.find(u => u.id === sessionData.userId);
+                if (user) {
+                    currentUser = user;
+                    userSettings = user.settings || { wallpaper: 'none', themeColor: '#00a884' };
+                    showChatScreen();
+                } else {
+                    localStorage.removeItem('currentSession');
+                    showAuthScreen();
+                }
             } else {
-                showSetupScreen();
+                showAuthScreen();
             }
             
             initEmojis();
@@ -986,144 +1110,43 @@
 
         // ==================== ЭКРАНЫ ====================
         
-        function showSetupScreen() {
-            document.getElementById('setupScreen').style.display = 'flex';
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('chatContainer').classList.remove('active');
-        }
-
         function showAuthScreen() {
-            document.getElementById('setupScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'flex';
             document.getElementById('chatContainer').classList.remove('active');
-            
-            // Загружаем пользователей из localStorage
-            const savedUsers = localStorage.getItem('users');
-            if (savedUsers) {
-                users = JSON.parse(savedUsers);
-            }
+            if (pollingInterval) clearInterval(pollingInterval);
         }
 
         function showChatScreen() {
-            document.getElementById('setupScreen').style.display = 'none';
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('chatContainer').classList.add('active');
             
             updateHeaderAvatar();
             applySettings();
+            loadMessages();
             startMessagePolling();
-            updateConnectionStatus('connected', 'Подключено');
         }
 
         // ==================== TELEGRAM API ====================
         
-        async function saveTelegramConfig() {
-            const token = document.getElementById('botToken').value.trim();
-            const chatId = document.getElementById('chatId').value.trim();
-            
-            const errorEl = document.getElementById('setupError');
-            const successEl = document.getElementById('setupSuccess');
-            const btn = document.getElementById('connectBtn');
-            
-            // Сброс сообщений
-            errorEl.classList.remove('show');
-            successEl.classList.remove('show');
-            
-            // Валидация
-            if (!token || !chatId) {
-                errorEl.textContent = 'Заполни оба поля';
-                errorEl.classList.add('show');
-                return;
-            }
-            
-            if (!token.includes(':')) {
-                errorEl.textContent = 'Неверный формат токена (должен содержать :)';
-                errorEl.classList.add('show');
-                return;
-            }
-            
-            btn.disabled = true;
-            btn.textContent = 'Проверка...';
-            
-            try {
-                // Проверяем соединение с Telegram
-                const testUrl = `https://api.telegram.org/bot${token}/getMe`;
-                const response = await fetch(testUrl);
-                const data = await response.json();
-                
-                if (!data.ok) {
-                    throw new Error(data.description || 'Неверный токен');
-                }
-                
-                // Проверяем отправку в группу
-                const testMessageUrl = `https://api.telegram.org/bot${token}/sendMessage`;
-                const testResponse = await fetch(testMessageUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: '🔌 Бич Багги чат подключен!'
-                    })
-                });
-                
-                const testData = await testResponse.json();
-                
-                if (!testData.ok) {
-                    throw new Error('Не удалось отправить сообщение в группу. Проверь Chat ID и права бота.');
-                }
-                
-                // Сохраняем конфиг
-                telegramConfig = { botToken: token, chatId: chatId };
-                localStorage.setItem('telegramConfig', JSON.stringify(telegramConfig));
-                
-                successEl.textContent = 'Подключено успешно!';
-                successEl.classList.add('show');
-                
-                setTimeout(() => {
-                    showAuthScreen();
-                }, 1500);
-                
-            } catch (error) {
-                errorEl.textContent = 'Ошибка: ' + error.message;
-                errorEl.classList.add('show');
-                btn.disabled = false;
-                btn.textContent = 'Подключиться';
-            }
-        }
-
-        function resetConfig() {
-            if (confirm('Сбросить настройки Telegram?')) {
-                localStorage.removeItem('telegramConfig');
-                telegramConfig = { botToken: '', chatId: '' };
-                showSetupScreen();
-            }
-        }
-
         async function sendTelegramMessage(text) {
-            if (!telegramConfig.botToken || !telegramConfig.chatId) return;
-            
-            const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
-            
-            const messageData = {
-                chat_id: telegramConfig.chatId,
-                text: text,
-                parse_mode: 'HTML'
-            };
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
             
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(messageData)
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: text,
+                        parse_mode: 'HTML'
+                    })
                 });
                 
                 const data = await response.json();
-                
                 if (!data.ok) {
                     console.error('Ошибка отправки:', data);
                     updateConnectionStatus('error', 'Ошибка отправки');
                 }
-                
                 return data;
             } catch (error) {
                 console.error('Ошибка сети:', error);
@@ -1132,25 +1155,20 @@
         }
 
         async function getTelegramMessages() {
-            if (!telegramConfig.botToken) return [];
-            
-            const url = `https://api.telegram.org/bot${telegramConfig.botToken}/getUpdates?offset=${lastUpdateId + 1}`;
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}`;
             
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 
                 if (data.ok && data.result.length > 0) {
-                    // Обновляем lastUpdateId
                     data.result.forEach(update => {
                         if (update.update_id > lastUpdateId) {
                             lastUpdateId = update.update_id;
                         }
                     });
-                    
                     return data.result;
                 }
-                
                 return [];
             } catch (error) {
                 console.error('Ошибка получения сообщений:', error);
@@ -1160,11 +1178,9 @@
         }
 
         function startMessagePolling() {
-            // Первоначальная загрузка
             loadMessages();
             
-            // Периодическая проверка новых сообщений (каждые 3 секунды)
-            setInterval(async () => {
+            pollingInterval = setInterval(async () => {
                 if (!currentUser) return;
                 
                 const updates = await getTelegramMessages();
@@ -1178,11 +1194,8 @@
         }
 
         function processTelegramMessage(tgMessage) {
-            // Пропускаем служебные сообщения
             if (!tgMessage.text || tgMessage.text.startsWith('🔌')) return;
             
-            // Парсим сообщение из Telegram
-            // Формат: "USERNAME: текст сообщения"
             const text = tgMessage.text;
             const colonIndex = text.indexOf(':');
             
@@ -1191,23 +1204,22 @@
             const username = text.substring(0, colonIndex).trim();
             const messageText = text.substring(colonIndex + 1).trim();
             
-            // Ищем пользователя
             const user = users.find(u => u.username === username);
             
             const message = {
-                id: tgMessage.message_id,
+                id: tgMessage.message_id.toString(),
                 userId: user ? user.id : 'unknown',
                 username: username,
                 avatar: user ? user.avatar : AVATAR_URLS[0],
                 isCustomAvatar: user ? user.isCustomAvatar : false,
                 text: messageText,
-                timestamp: tgMessage.date * 1000, // Telegram дает Unix timestamp
+                timestamp: tgMessage.date * 1000,
                 isFromTelegram: true
             };
             
-            // Проверяем, нет ли уже такого сообщения
             if (!messages.find(m => m.id === message.id)) {
                 messages.push(message);
+                saveMessages();
                 renderMessages();
                 scrollToBottom();
             }
@@ -1223,6 +1235,7 @@
             document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
             
             hideError();
+            hideSuccess();
         }
 
         function initAvatarSelector() {
@@ -1268,9 +1281,18 @@
             reader.readAsDataURL(file);
         }
 
-        function register() {
+        async function register() {
+            const inviteCode = document.getElementById('inviteCode').value.trim();
             const username = document.getElementById('regUsername').value.trim();
             const password = document.getElementById('regPassword').value;
+            
+            hideError();
+            hideSuccess();
+            
+            if (inviteCode !== INVITE_CODE) {
+                showError('Неверный инвайт-код. Обратись к админу для получения кода.');
+                return;
+            }
             
             if (!username || !password) {
                 showError('Заполни все поля');
@@ -1290,13 +1312,14 @@
             const newUser = {
                 id: Date.now().toString(),
                 username: username,
-                password: password, // В реальном приложении нужно хешировать!
+                password: password,
                 avatar: customAvatarData || selectedAvatar,
                 isCustomAvatar: !!customAvatarData,
                 settings: {
                     wallpaper: 'none',
                     themeColor: '#00a884'
-                }
+                },
+                createdAt: Date.now()
             };
             
             users.push(newUser);
@@ -1305,15 +1328,21 @@
             currentUser = newUser;
             userSettings = newUser.settings;
             
-            // Отправляем приветствие в Telegram
-            sendTelegramMessage(`${username}: 👋 Присоединился к чату!`);
+            localStorage.setItem('currentSession', JSON.stringify({ userId: newUser.id }));
             
-            showChatScreen();
+            await sendTelegramMessage(`👋 <b>${username}</b> присоединился к чату!`);
+            
+            showSuccess('Аккаунт создан! Входим...');
+            setTimeout(() => {
+                showChatScreen();
+            }, 1000);
         }
 
         function login() {
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
+            
+            hideError();
             
             const user = users.find(u => u.username === username && u.password === password);
             
@@ -1325,12 +1354,16 @@
             currentUser = user;
             userSettings = user.settings || { wallpaper: 'none', themeColor: '#00a884' };
             
+            localStorage.setItem('currentSession', JSON.stringify({ userId: user.id }));
+            
             showChatScreen();
         }
 
         function logout() {
             if (confirm('Выйти из аккаунта?')) {
                 currentUser = null;
+                localStorage.removeItem('currentSession');
+                if (pollingInterval) clearInterval(pollingInterval);
                 showAuthScreen();
             }
         }
@@ -1343,13 +1376,16 @@
             
             if (!text) return;
             
-            // Отправляем в Telegram
             const telegramText = `${currentUser.username}: ${text}`;
-            await sendTelegramMessage(telegramText);
+            const result = await sendTelegramMessage(telegramText);
             
-            // Добавляем локально для мгновенного отображения
+            if (!result || !result.ok) {
+                showError('Не удалось отправить сообщение');
+                return;
+            }
+            
             const message = {
-                id: Date.now(),
+                id: result.result.message_id.toString(),
                 userId: currentUser.id,
                 username: currentUser.username,
                 avatar: currentUser.avatar,
@@ -1360,6 +1396,7 @@
             };
             
             messages.push(message);
+            saveMessages();
             
             input.value = '';
             input.rows = 1;
@@ -1370,12 +1407,15 @@
         }
 
         function loadMessages() {
-            // Загружаем историю из localStorage (если есть)
             const saved = localStorage.getItem('messages');
             if (saved) {
                 messages = JSON.parse(saved);
                 renderMessages();
             }
+        }
+
+        function saveMessages() {
+            localStorage.setItem('messages', JSON.stringify(messages));
         }
 
         function renderMessages() {
@@ -1389,7 +1429,6 @@
             let html = '';
             let lastDate = null;
             
-            // Сортируем по времени
             const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
             
             sortedMessages.forEach(msg => {
@@ -1401,9 +1440,7 @@
                 
                 const isOwn = msg.userId === currentUser.id;
                 
-                const avatarHtml = msg.isCustomAvatar
-                    ? `<img src="${msg.avatar}" style="width:100%;height:100%;object-fit:cover;">`
-                    : `<img src="${msg.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+                const avatarHtml = `<img src="${msg.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
                 
                 html += `
                     <div class="message ${isOwn ? 'own' : ''}">
@@ -1427,7 +1464,6 @@
         // ==================== НАСТРОЙКИ ====================
         
         function initSettings() {
-            // Обои
             document.querySelectorAll('.wallpaper-option').forEach(el => {
                 el.addEventListener('click', () => {
                     document.querySelectorAll('.wallpaper-option').forEach(w => w.classList.remove('selected'));
@@ -1436,7 +1472,6 @@
                 });
             });
             
-            // Цвета
             document.querySelectorAll('.color-option').forEach(el => {
                 el.addEventListener('click', () => {
                     document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
@@ -1470,7 +1505,6 @@
             userSettings = tempSettings;
             currentUser.settings = userSettings;
             
-            // Обновляем в списке пользователей
             const userIndex = users.findIndex(u => u.id === currentUser.id);
             if (userIndex !== -1) {
                 users[userIndex].settings = userSettings;
@@ -1518,22 +1552,191 @@
             const img = document.getElementById('profileAvatarImg');
             const fallback = document.getElementById('profileAvatarFallback');
             
-            if (currentUser.isCustomAvatar) {
-                img.src = currentUser.avatar;
-                img.style.display = 'block';
-                fallback.style.display = 'none';
-            } else {
-                img.src = currentUser.avatar;
-                img.style.display = 'block';
-                fallback.style.display = 'none';
-            }
+            img.src = currentUser.avatar;
+            img.style.display = 'block';
+            fallback.style.display = 'none';
             
             document.getElementById('profileName').textContent = currentUser.username;
+            document.getElementById('profileUsername').textContent = '@' + currentUser.username;
             document.getElementById('profileModal').classList.add('active');
         }
 
         function closeProfile() {
             document.getElementById('profileModal').classList.remove('active');
+        }
+
+        // ==================== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ====================
+        
+        function showEditProfile() {
+            closeProfile();
+            
+            document.getElementById('editUsername').value = currentUser.username;
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editConfirmPassword').value = '';
+            document.getElementById('editErrorMsg').classList.remove('show');
+            
+            const img = document.getElementById('editAvatarImg');
+            const fallback = document.getElementById('editAvatarFallback');
+            img.src = currentUser.avatar;
+            img.style.display = 'block';
+            fallback.style.display = 'none';
+            
+            tempEditAvatar = currentUser.avatar;
+            tempEditIsCustom = currentUser.isCustomAvatar;
+            
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function closeEditProfile() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        function selectNewAvatar() {
+            const container = document.getElementById('editAvatarSelector');
+            container.innerHTML = '';
+            
+            AVATAR_URLS.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.className = 'avatar-option';
+                if (url === tempEditAvatar && !tempEditIsCustom) {
+                    div.classList.add('selected');
+                }
+                div.dataset.avatar = url;
+                div.innerHTML = `<img src="${url}" alt="avatar ${index + 1}">`;
+                div.onclick = () => {
+                    document.querySelectorAll('#editAvatarSelector .avatar-option').forEach(a => a.classList.remove('selected'));
+                    div.classList.add('selected');
+                    tempEditAvatar = url;
+                    tempEditIsCustom = false;
+                };
+                container.appendChild(div);
+            });
+            
+            document.getElementById('avatarSelectModal').classList.add('active');
+        }
+
+        function closeAvatarSelect() {
+            document.getElementById('avatarSelectModal').classList.remove('active');
+        }
+
+        function confirmAvatarSelect() {
+            const img = document.getElementById('editAvatarImg');
+            const fallback = document.getElementById('editAvatarFallback');
+            img.src = tempEditAvatar;
+            img.style.display = 'block';
+            fallback.style.display = 'none';
+            closeAvatarSelect();
+        }
+
+        function uploadNewAvatar() {
+            document.getElementById('editAvatarUpload').click();
+        }
+
+        function handleEditAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                tempEditAvatar = e.target.result;
+                tempEditIsCustom = true;
+                
+                const img = document.getElementById('editAvatarImg');
+                const fallback = document.getElementById('editAvatarFallback');
+                img.src = tempEditAvatar;
+                img.style.display = 'block';
+                fallback.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function saveProfile() {
+            const newUsername = document.getElementById('editUsername').value.trim();
+            const newPassword = document.getElementById('editPassword').value;
+            const confirmPassword = document.getElementById('editConfirmPassword').value;
+            const errorEl = document.getElementById('editErrorMsg');
+            
+            errorEl.classList.remove('show');
+            
+            if (!newUsername) {
+                errorEl.textContent = 'Имя пользователя обязательно';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            if (confirmPassword !== currentUser.password) {
+                errorEl.textContent = 'Неверный текущий пароль';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            if (newUsername !== currentUser.username && users.find(u => u.username === newUsername)) {
+                errorEl.textContent = 'Такое имя уже занято';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            const oldUsername = currentUser.username;
+            const oldAvatar = currentUser.avatar;
+            
+            currentUser.username = newUsername;
+            if (newPassword) {
+                currentUser.password = newPassword;
+            }
+            currentUser.avatar = tempEditAvatar;
+            currentUser.isCustomAvatar = tempEditIsCustom;
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            messages.forEach(msg => {
+                if (msg.userId === currentUser.id) {
+                    msg.username = newUsername;
+                    msg.avatar = tempEditAvatar;
+                    msg.isCustomAvatar = tempEditIsCustom;
+                }
+            });
+            saveMessages();
+            
+            if (oldUsername !== newUsername) {
+                await sendTelegramMessage(`📝 <b>${oldUsername}</b> сменил имя на <b>${newUsername}</b>`);
+            }
+            
+            if (oldAvatar !== tempEditAvatar) {
+                await sendTelegramMessage(`🖼 <b>${newUsername}</b> обновил аватар`);
+            }
+            
+            renderMessages();
+            closeEditProfile();
+            updateHeaderAvatar();
+        }
+
+        async function deleteAccount() {
+            if (!confirm('⚠️ Ты уверен? Аккаунт будет удалён навсегда!')) return;
+            
+            const confirmPassword = prompt('Введи текущий пароль для подтверждения:');
+            if (confirmPassword !== currentUser.password) {
+                alert('Неверный пароль');
+                return;
+            }
+            
+            await sendTelegramMessage(`🚪 <b>${currentUser.username}</b> удалил свой аккаунт`);
+            
+            users = users.filter(u => u.id !== currentUser.id);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            messages = messages.filter(m => m.userId !== currentUser.id);
+            saveMessages();
+            
+            localStorage.removeItem('currentSession');
+            
+            alert('Аккаунт удалён');
+            currentUser = null;
+            if (pollingInterval) clearInterval(pollingInterval);
+            showAuthScreen();
         }
 
         function updateHeaderAvatar() {
@@ -1600,13 +1803,24 @@
         }
 
         function showError(text) {
-            const el = document.getElementById('errorMsg') || document.getElementById('setupError');
+            const el = document.getElementById('errorMsg');
             el.textContent = text;
             el.classList.add('show');
         }
 
         function hideError() {
             const el = document.getElementById('errorMsg');
+            if (el) el.classList.remove('show');
+        }
+
+        function showSuccess(text) {
+            const el = document.getElementById('successMsg');
+            el.textContent = text;
+            el.classList.add('show');
+        }
+
+        function hideSuccess() {
+            const el = document.getElementById('successMsg');
             if (el) el.classList.remove('show');
         }
 
@@ -1631,7 +1845,6 @@
             return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
         }
 
-        // Закрытие меню по клику вне
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.emoji-btn') && !e.target.closest('.emoji-menu')) {
                 document.getElementById('emojiMenu').classList.remove('active');
