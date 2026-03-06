@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бич Багги | Telegram Chat</title>
     <style>
-        /* Стили остаются теми же, что и в предыдущем ответе */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
@@ -95,6 +94,97 @@
             border-color: var(--accent);
         }
 
+        .telegram-setup {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .telegram-setup h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .telegram-setup p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .telegram-setup code {
+            background: var(--bg-dark);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--accent);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover { background: var(--accent-hover); }
+        .auth-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-msg.show { display: block; }
+
+        .success-msg {
+            color: var(--online-green);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-msg.show { display: block; }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
         .avatar-selector {
             display: flex;
             gap: 8px;
@@ -145,51 +235,6 @@
 
         .avatar-upload:hover {
             border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .auth-btn {
-            width: 100%;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-
-        .auth-btn:hover { background: var(--accent-hover); }
-
-        .telegram-setup {
-            background: var(--bg-hover);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-
-        .telegram-setup h3 {
-            color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .telegram-setup p {
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .telegram-setup code {
-            background: var(--bg-dark);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
             color: var(--accent);
         }
 
@@ -261,11 +306,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .online-count {
-            color: var(--online-green);
-            font-weight: 500;
         }
 
         .connection-status {
@@ -441,7 +481,7 @@
             border: 1px solid var(--border);
         }
 
-        .attach-btn, .emoji-btn, .send-btn {
+        .emoji-btn, .send-btn {
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -453,13 +493,13 @@
             flex-shrink: 0;
         }
 
-        .attach-btn, .emoji-btn {
+        .emoji-btn {
             background: transparent;
             color: var(--text-secondary);
             font-size: 18px;
         }
 
-        .attach-btn:hover, .emoji-btn:hover { color: var(--accent); }
+        .emoji-btn:hover { color: var(--accent); }
 
         .message-input {
             flex: 1;
@@ -487,37 +527,21 @@
             cursor: not-allowed;
         }
 
-        .attach-menu, .emoji-menu {
+        .emoji-menu {
             display: none;
             position: absolute;
             bottom: 70px;
+            right: 60px;
             background: var(--bg-card);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 1px solid var(--border);
             z-index: 100;
-        }
-
-        .attach-menu { left: 16px; }
-        .emoji-menu {
-            right: 60px;
             max-width: 280px;
         }
 
-        .attach-menu.active, .emoji-menu.active { display: block; }
-
-        .attach-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .attach-option:hover { background: var(--bg-hover); }
+        .emoji-menu.active { display: block; }
 
         .emoji-grid {
             display: grid;
@@ -732,7 +756,7 @@
                 <p>2. Создай бота командой <code>/newbot</code></p>
                 <p>3. Скопируй токен и вставь ниже</p>
                 <p>4. Добавь бота в группу, сделай админом</p>
-                <p>5. Узнай <code>chat_id</code> через <code>/getUpdates</code></p>
+                <p>5. Узнай <code>chat_id</code> через API</p>
             </div>
 
             <div class="form-group">
@@ -745,8 +769,12 @@
                 <input type="text" class="form-input" id="chatId" placeholder="-1234567890">
             </div>
 
-            <button class="auth-btn" onclick="saveTelegramConfig()">Подключиться</button>
-            <p style="color: var(--text-secondary); margin-top: 10px; font-size: 12px; text-align: center;">
+            <button class="auth-btn" onclick="saveTelegramConfig()" id="connectBtn">Подключиться</button>
+            
+            <div class="error-msg" id="setupError"></div>
+            <div class="success-msg" id="setupSuccess"></div>
+            
+            <p style="color: var(--text-secondary); margin-top: 15px; font-size: 12px; text-align: center;">
                 Данные хранятся только в твоём браузере
             </p>
         </div>
@@ -795,7 +823,7 @@
             <div class="error-msg" id="errorMsg"></div>
             
             <div style="margin-top: 20px; text-align: center;">
-                <button class="data-btn" onclick="resetConfig()" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px;">
+                <button onclick="resetConfig()" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px;">
                     Сменить Telegram настройки
                 </button>
             </div>
@@ -833,4 +861,785 @@
         <div class="messages-area" id="messagesArea"></div>
 
         <div class="input-area">
-            <div class
+            <div class="input-container">
+                <textarea class="message-input" id="messageInput" placeholder="Написать сообщение..." rows="1" oninput="autoResize(this)" onkeypress="handleKeyPress(event)"></textarea>
+                <button class="emoji-btn" onclick="toggleEmojiMenu()">😊</button>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка настроек -->
+    <div class="modal settings-modal" id="settingsModal">
+        <div class="modal-content">
+            <h3 class="settings-title">Настройки чата</h3>
+
+            <div class="settings-section">
+                <label class="settings-label">Обои чата</label>
+                <div class="wallpaper-grid" id="wallpaperGrid">
+                    <div class="wallpaper-option selected" data-wallpaper="none" style="background: var(--bg-dark);"></div>
+                    <div class="wallpaper-option" data-wallpaper="gradient1" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="wallpaper-option" data-wallpaper="gradient2" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <div class="wallpaper-option" data-wallpaper="gradient3" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <div class="wallpaper-option" data-wallpaper="gradient4" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                    <div class="wallpaper-option" data-wallpaper="dark1" style="background: #1a1a2e;"></div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <label class="settings-label">Цветовая тема</label>
+                <div class="color-picker" id="colorPicker">
+                    <div class="color-option selected" data-color="#00a884" style="background: #00a884;"></div>
+                    <div class="color-option" data-color="#0088cc" style="background: #0088cc;"></div>
+                    <div class="color-option" data-color="#ff6b6b" style="background: #ff6b6b;"></div>
+                    <div class="color-option" data-color="#ffd93d" style="background: #ffd93d;"></div>
+                    <div class="color-option" data-color="#6bcf7f" style="background: #6bcf7f;"></div>
+                    <div class="color-option" data-color="#a855f7" style="background: #a855f7;"></div>
+                    <div class="color-option" data-color="#ec4899" style="background: #ec4899;"></div>
+                    <div class="color-option" data-color="#f97316" style="background: #f97316;"></div>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="settings-btn secondary" onclick="closeSettings()">Отмена</button>
+                <button class="settings-btn primary" onclick="saveSettings()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка профиля -->
+    <div class="modal profile-modal" id="profileModal">
+        <div class="modal-content">
+            <div class="profile-avatar-large" id="profileAvatar">
+                <img src="" id="profileAvatarImg" style="display: none;">
+                <span id="profileAvatarFallback">👤</span>
+            </div>
+            <div class="profile-name" id="profileName">Имя</div>
+            <div class="profile-status" id="profileStatus">в сети</div>
+            <div class="profile-actions">
+                <button class="profile-btn secondary" onclick="closeProfile()">Закрыть</button>
+                <button class="profile-btn primary" onclick="logout()">Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== КОНФИГУРАЦИЯ ====================
+        
+        // URL аватарок (DiceBear API)
+        const AVATAR_URLS = [
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=c0aede',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Zack&backgroundColor=d1d4f9',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Molly&backgroundColor=ffdfbf',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Bear&backgroundColor=c0aede',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Gizmo&backgroundColor=b6e3f4',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Shadow&backgroundColor=ffdfbf',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella&backgroundColor=c0aede',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie&backgroundColor=d1d4f9',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=b6e3f4',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Max&backgroundColor=ffdfbf',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Kitty&backgroundColor=c0aede',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Coco&backgroundColor=d1d4f9',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Rocky&backgroundColor=b6e3f4',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Daisy&backgroundColor=ffdfbf',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=c0aede',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=d1d4f9',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=b6e3f4',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Lola&backgroundColor=ffdfbf',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=c0aede'
+        ];
+
+        const EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
+
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+        
+        let telegramConfig = {
+            botToken: '',
+            chatId: ''
+        };
+        
+        let currentUser = null;
+        let userSettings = {};
+        let selectedAvatar = AVATAR_URLS[0];
+        let customAvatarData = null;
+        let lastUpdateId = 0;
+        let messages = [];
+        let users = [];
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Проверяем сохранённые настройки Telegram
+            const savedConfig = localStorage.getItem('telegramConfig');
+            if (savedConfig) {
+                telegramConfig = JSON.parse(savedConfig);
+                showAuthScreen();
+            } else {
+                showSetupScreen();
+            }
+            
+            initEmojis();
+            initAvatarSelector();
+            initSettings();
+        });
+
+        // ==================== ЭКРАНЫ ====================
+        
+        function showSetupScreen() {
+            document.getElementById('setupScreen').style.display = 'flex';
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('chatContainer').classList.remove('active');
+        }
+
+        function showAuthScreen() {
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('chatContainer').classList.remove('active');
+            
+            // Загружаем пользователей из localStorage
+            const savedUsers = localStorage.getItem('users');
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            }
+        }
+
+        function showChatScreen() {
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('chatContainer').classList.add('active');
+            
+            updateHeaderAvatar();
+            applySettings();
+            startMessagePolling();
+            updateConnectionStatus('connected', 'Подключено');
+        }
+
+        // ==================== TELEGRAM API ====================
+        
+        async function saveTelegramConfig() {
+            const token = document.getElementById('botToken').value.trim();
+            const chatId = document.getElementById('chatId').value.trim();
+            
+            const errorEl = document.getElementById('setupError');
+            const successEl = document.getElementById('setupSuccess');
+            const btn = document.getElementById('connectBtn');
+            
+            // Сброс сообщений
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+            
+            // Валидация
+            if (!token || !chatId) {
+                errorEl.textContent = 'Заполни оба поля';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            if (!token.includes(':')) {
+                errorEl.textContent = 'Неверный формат токена (должен содержать :)';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Проверка...';
+            
+            try {
+                // Проверяем соединение с Telegram
+                const testUrl = `https://api.telegram.org/bot${token}/getMe`;
+                const response = await fetch(testUrl);
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    throw new Error(data.description || 'Неверный токен');
+                }
+                
+                // Проверяем отправку в группу
+                const testMessageUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+                const testResponse = await fetch(testMessageUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: '🔌 Бич Багги чат подключен!'
+                    })
+                });
+                
+                const testData = await testResponse.json();
+                
+                if (!testData.ok) {
+                    throw new Error('Не удалось отправить сообщение в группу. Проверь Chat ID и права бота.');
+                }
+                
+                // Сохраняем конфиг
+                telegramConfig = { botToken: token, chatId: chatId };
+                localStorage.setItem('telegramConfig', JSON.stringify(telegramConfig));
+                
+                successEl.textContent = 'Подключено успешно!';
+                successEl.classList.add('show');
+                
+                setTimeout(() => {
+                    showAuthScreen();
+                }, 1500);
+                
+            } catch (error) {
+                errorEl.textContent = 'Ошибка: ' + error.message;
+                errorEl.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'Подключиться';
+            }
+        }
+
+        function resetConfig() {
+            if (confirm('Сбросить настройки Telegram?')) {
+                localStorage.removeItem('telegramConfig');
+                telegramConfig = { botToken: '', chatId: '' };
+                showSetupScreen();
+            }
+        }
+
+        async function sendTelegramMessage(text) {
+            if (!telegramConfig.botToken || !telegramConfig.chatId) return;
+            
+            const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
+            
+            const messageData = {
+                chat_id: telegramConfig.chatId,
+                text: text,
+                parse_mode: 'HTML'
+            };
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(messageData)
+                });
+                
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    console.error('Ошибка отправки:', data);
+                    updateConnectionStatus('error', 'Ошибка отправки');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                updateConnectionStatus('error', 'Нет соединения');
+            }
+        }
+
+        async function getTelegramMessages() {
+            if (!telegramConfig.botToken) return [];
+            
+            const url = `https://api.telegram.org/bot${telegramConfig.botToken}/getUpdates?offset=${lastUpdateId + 1}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.ok && data.result.length > 0) {
+                    // Обновляем lastUpdateId
+                    data.result.forEach(update => {
+                        if (update.update_id > lastUpdateId) {
+                            lastUpdateId = update.update_id;
+                        }
+                    });
+                    
+                    return data.result;
+                }
+                
+                return [];
+            } catch (error) {
+                console.error('Ошибка получения сообщений:', error);
+                updateConnectionStatus('error', 'Нет соединения');
+                return [];
+            }
+        }
+
+        function startMessagePolling() {
+            // Первоначальная загрузка
+            loadMessages();
+            
+            // Периодическая проверка новых сообщений (каждые 3 секунды)
+            setInterval(async () => {
+                if (!currentUser) return;
+                
+                const updates = await getTelegramMessages();
+                
+                updates.forEach(update => {
+                    if (update.message && update.message.text) {
+                        processTelegramMessage(update.message);
+                    }
+                });
+            }, 3000);
+        }
+
+        function processTelegramMessage(tgMessage) {
+            // Пропускаем служебные сообщения
+            if (!tgMessage.text || tgMessage.text.startsWith('🔌')) return;
+            
+            // Парсим сообщение из Telegram
+            // Формат: "USERNAME: текст сообщения"
+            const text = tgMessage.text;
+            const colonIndex = text.indexOf(':');
+            
+            if (colonIndex === -1) return;
+            
+            const username = text.substring(0, colonIndex).trim();
+            const messageText = text.substring(colonIndex + 1).trim();
+            
+            // Ищем пользователя
+            const user = users.find(u => u.username === username);
+            
+            const message = {
+                id: tgMessage.message_id,
+                userId: user ? user.id : 'unknown',
+                username: username,
+                avatar: user ? user.avatar : AVATAR_URLS[0],
+                isCustomAvatar: user ? user.isCustomAvatar : false,
+                text: messageText,
+                timestamp: tgMessage.date * 1000, // Telegram дает Unix timestamp
+                isFromTelegram: true
+            };
+            
+            // Проверяем, нет ли уже такого сообщения
+            if (!messages.find(m => m.id === message.id)) {
+                messages.push(message);
+                renderMessages();
+                scrollToBottom();
+            }
+        }
+
+        // ==================== АВТОРИЗАЦИЯ ====================
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+            
+            hideError();
+        }
+
+        function initAvatarSelector() {
+            const container = document.getElementById('avatarSelector');
+            container.innerHTML = '';
+            
+            AVATAR_URLS.forEach((url, index) => {
+                const div = document.createElement('div');
+                div.className = 'avatar-option' + (index === 0 ? ' selected' : '');
+                div.dataset.avatar = url;
+                div.innerHTML = `<img src="${url}" alt="avatar ${index + 1}">`;
+                div.onclick = () => selectPresetAvatar(div, url);
+                container.appendChild(div);
+            });
+            
+            const uploadBtn = document.createElement('div');
+            uploadBtn.className = 'avatar-upload';
+            uploadBtn.innerHTML = '+';
+            uploadBtn.onclick = () => document.getElementById('regAvatarUpload').click();
+            container.appendChild(uploadBtn);
+        }
+
+        function selectPresetAvatar(element, url) {
+            document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAvatar = url;
+            customAvatarData = null;
+        }
+
+        function handleRegAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                customAvatarData = e.target.result;
+                document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+                
+                const uploadBtn = document.querySelector('.avatar-upload');
+                uploadBtn.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                uploadBtn.classList.add('selected');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            if (!username || !password) {
+                showError('Заполни все поля');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showError('Пароль минимум 4 символа');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                showError('Такое имя уже занято');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now().toString(),
+                username: username,
+                password: password, // В реальном приложении нужно хешировать!
+                avatar: customAvatarData || selectedAvatar,
+                isCustomAvatar: !!customAvatarData,
+                settings: {
+                    wallpaper: 'none',
+                    themeColor: '#00a884'
+                }
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            userSettings = newUser.settings;
+            
+            // Отправляем приветствие в Telegram
+            sendTelegramMessage(`${username}: 👋 Присоединился к чату!`);
+            
+            showChatScreen();
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (!user) {
+                showError('Неверное имя или пароль');
+                return;
+            }
+            
+            currentUser = user;
+            userSettings = user.settings || { wallpaper: 'none', themeColor: '#00a884' };
+            
+            showChatScreen();
+        }
+
+        function logout() {
+            if (confirm('Выйти из аккаунта?')) {
+                currentUser = null;
+                showAuthScreen();
+            }
+        }
+
+        // ==================== ЧАТ ====================
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            // Отправляем в Telegram
+            const telegramText = `${currentUser.username}: ${text}`;
+            await sendTelegramMessage(telegramText);
+            
+            // Добавляем локально для мгновенного отображения
+            const message = {
+                id: Date.now(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                isCustomAvatar: currentUser.isCustomAvatar,
+                text: text,
+                timestamp: Date.now(),
+                isFromTelegram: false
+            };
+            
+            messages.push(message);
+            
+            input.value = '';
+            input.rows = 1;
+            document.getElementById('sendBtn').disabled = true;
+            
+            renderMessages();
+            scrollToBottom();
+        }
+
+        function loadMessages() {
+            // Загружаем историю из localStorage (если есть)
+            const saved = localStorage.getItem('messages');
+            if (saved) {
+                messages = JSON.parse(saved);
+                renderMessages();
+            }
+        }
+
+        function renderMessages() {
+            const area = document.getElementById('messagesArea');
+            
+            if (!messages.length) {
+                area.innerHTML = '<div style="text-align: center; color: var(--text-secondary); margin-top: 50px;">Нет сообщений. Начни общение!</div>';
+                return;
+            }
+            
+            let html = '';
+            let lastDate = null;
+            
+            // Сортируем по времени
+            const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
+            
+            sortedMessages.forEach(msg => {
+                const msgDate = new Date(msg.timestamp).toLocaleDateString('ru-RU');
+                if (msgDate !== lastDate) {
+                    html += `<div class="date-divider"><span class="date-label">${formatDate(msg.timestamp)}</span></div>`;
+                    lastDate = msgDate;
+                }
+                
+                const isOwn = msg.userId === currentUser.id;
+                
+                const avatarHtml = msg.isCustomAvatar
+                    ? `<img src="${msg.avatar}" style="width:100%;height:100%;object-fit:cover;">`
+                    : `<img src="${msg.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+                
+                html += `
+                    <div class="message ${isOwn ? 'own' : ''}">
+                        <div class="message-avatar">${avatarHtml}</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                ${isOwn ? '' : `<div class="message-sender">${escapeHtml(msg.username)}</div>`}
+                                <div class="message-text">${escapeHtml(msg.text)}</div>
+                            </div>
+                            <div class="message-meta">
+                                <span>${formatTime(msg.timestamp)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            area.innerHTML = html;
+        }
+
+        // ==================== НАСТРОЙКИ ====================
+        
+        function initSettings() {
+            // Обои
+            document.querySelectorAll('.wallpaper-option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('.wallpaper-option').forEach(w => w.classList.remove('selected'));
+                    el.classList.add('selected');
+                    tempSettings.wallpaper = el.dataset.wallpaper;
+                });
+            });
+            
+            // Цвета
+            document.querySelectorAll('.color-option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(c => c.classList.remove('selected'));
+                    el.classList.add('selected');
+                    tempSettings.themeColor = el.dataset.color;
+                });
+            });
+        }
+
+        let tempSettings = {};
+
+        function showSettings() {
+            tempSettings = { ...userSettings };
+            
+            document.querySelectorAll('.wallpaper-option').forEach(el => {
+                el.classList.toggle('selected', el.dataset.wallpaper === userSettings.wallpaper);
+            });
+            
+            document.querySelectorAll('.color-option').forEach(el => {
+                el.classList.toggle('selected', el.dataset.color === userSettings.themeColor);
+            });
+            
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveSettings() {
+            userSettings = tempSettings;
+            currentUser.settings = userSettings;
+            
+            // Обновляем в списке пользователей
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex].settings = userSettings;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            applySettings();
+            closeSettings();
+        }
+
+        function applySettings() {
+            const msgsArea = document.getElementById('messagesArea');
+            const wallpaper = userSettings.wallpaper || 'none';
+            
+            const gradients = {
+                gradient1: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                gradient2: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                gradient3: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                gradient4: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                dark1: '#1a1a2e'
+            };
+            
+            if (wallpaper === 'none') {
+                msgsArea.style.background = 'var(--bg-dark)';
+            } else {
+                msgsArea.style.background = gradients[wallpaper] || 'var(--bg-dark)';
+            }
+            
+            const color = userSettings.themeColor || '#00a884';
+            document.documentElement.style.setProperty('--accent', color);
+            document.documentElement.style.setProperty('--accent-hover', adjustColor(color, 20));
+        }
+
+        function adjustColor(color, amount) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const r = Math.min(255, (num >> 16) + amount);
+            const g = Math.min(255, ((num >> 8) & 0x00FF) + amount);
+            const b = Math.min(255, (num & 0x0000FF) + amount);
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+
+        // ==================== ПРОФИЛЬ ====================
+        
+        function showProfile() {
+            const img = document.getElementById('profileAvatarImg');
+            const fallback = document.getElementById('profileAvatarFallback');
+            
+            if (currentUser.isCustomAvatar) {
+                img.src = currentUser.avatar;
+                img.style.display = 'block';
+                fallback.style.display = 'none';
+            } else {
+                img.src = currentUser.avatar;
+                img.style.display = 'block';
+                fallback.style.display = 'none';
+            }
+            
+            document.getElementById('profileName').textContent = currentUser.username;
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfile() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function updateHeaderAvatar() {
+            const img = document.getElementById('headerAvatarImg');
+            const fallback = document.getElementById('headerAvatarFallback');
+            
+            img.src = currentUser.avatar;
+            img.style.display = 'block';
+            fallback.style.display = 'none';
+        }
+
+        function updateConnectionStatus(status, text) {
+            const el = document.getElementById('connStatus');
+            el.textContent = text;
+            el.className = 'connection-status ' + status;
+        }
+
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ====================
+        
+        function initEmojis() {
+            const grid = document.getElementById('emojiGrid');
+            EMOJIS.forEach(emoji => {
+                const div = document.createElement('div');
+                div.className = 'emoji-item';
+                div.textContent = emoji;
+                div.onclick = () => insertEmoji(emoji);
+                grid.appendChild(div);
+            });
+        }
+
+        function toggleEmojiMenu() {
+            document.getElementById('emojiMenu').classList.toggle('active');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('messageInput');
+            input.value += emoji;
+            input.focus();
+            checkSendButton();
+            document.getElementById('emojiMenu').classList.remove('active');
+        }
+
+        function autoResize(textarea) {
+            textarea.rows = 1;
+            textarea.rows = Math.min(5, Math.ceil(textarea.scrollHeight / 24));
+            checkSendButton();
+        }
+
+        function checkSendButton() {
+            const text = document.getElementById('messageInput').value.trim();
+            document.getElementById('sendBtn').disabled = !text;
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function scrollToBottom() {
+            const area = document.getElementById('messagesArea');
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function showError(text) {
+            const el = document.getElementById('errorMsg') || document.getElementById('setupError');
+            el.textContent = text;
+            el.classList.add('show');
+        }
+
+        function hideError() {
+            const el = document.getElementById('errorMsg');
+            if (el) el.classList.remove('show');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        function formatTime(ts) {
+            return new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDate(ts) {
+            const d = new Date(ts);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (d.toDateString() === today.toDateString()) return 'Сегодня';
+            if (d.toDateString() === yesterday.toDateString()) return 'Вчера';
+            return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+        }
+
+        // Закрытие меню по клику вне
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.emoji-btn') && !e.target.closest('.emoji-menu')) {
+                document.getElementById('emojiMenu').classList.remove('active');
+            }
+            if (!e.target.closest('.modal') && e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
